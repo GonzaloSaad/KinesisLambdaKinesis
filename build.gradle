@@ -1,0 +1,130 @@
+/*group 'gon.test.aws'
+version '1.0'
+
+apply plugin: 'java'
+
+
+
+repositories {
+    mavenCentral()
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version,
+                'Main-Class': 'example.AppStart'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-function-adapter-aws', version: '1.0.0.RELEASE'
+
+
+    *//*compile group: 'org.springframework.cloud', name: 'spring-cloud-function-web', version: '1.0.0.M1'*//*
+
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-function-compiler', version: '1.0.0.RELEASE'
+
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-function-context', version: '1.0.0.RELEASE'
+
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.0.3.RELEASE'
+
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.3.RELEASE'
+
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '2.2.2'
+
+    compile 'com.amazonaws:aws-lambda-java-core:1.2.0'
+}*/
+
+buildscript {
+    ext {
+        springBootVersion = '1.5.12.RELEASE'
+        wrapperVersion = '1.0.11.RELEASE'
+        shadowVersion = '2.0.1'
+    }
+    repositories {
+        jcenter()
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:${shadowVersion}"
+        classpath("org.springframework.boot.experimental:spring-boot-thin-gradle-plugin:${wrapperVersion}")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'org.springframework.boot.experimental.thin-launcher'
+
+group = 'io.spring.sample'
+version = '2.0.0.BUILD-SNAPSHOT'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+}
+
+ext {
+    springCloudFunctionVersion = "1.0.0.RELEASE"
+    awsLambdaEventsVersion = "2.0.2"
+    awsLambdaCoreVersion = "1.1.0"
+}
+ext['reactor.version'] = "3.1.7.RELEASE"
+
+assemble.dependsOn = [shadowJar, bootRepackage]
+
+jar {
+    manifest {
+        attributes 'Start-Class': 'example.AppStart'
+    }
+}
+
+import com.github.jengelman.gradle.plugins.shadow.transformers.*
+
+shadowJar {
+    classifier = 'aws'
+    dependencies {
+        exclude(dependency("org.springframework.cloud:spring-cloud-function-web:${springCloudFunctionVersion}"))
+    }
+    // Required for Spring
+    mergeServiceFiles()
+    append 'META-INF/spring.handlers'
+    append 'META-INF/spring.schemas'
+    append 'META-INF/spring.tooling'
+    transform(PropertiesFileTransformer) {
+        paths = ['META-INF/spring.factories' ]
+        mergeStrategy = "append"
+    }
+}
+
+configurations {
+    testCompile.extendsFrom(compileOnly)
+}
+
+dependencies {
+    compile("org.springframework.cloud:spring-cloud-starter-function-web:${springCloudFunctionVersion}")
+    compile("org.springframework.cloud:spring-cloud-function-adapter-aws:${springCloudFunctionVersion}")
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '2.2.2'
+    compile group: 'com.amazonaws', name: 'amazon-kinesis-deaggregator', version: '1.0.3'
+    compile group: 'com.amazonaws', name: 'amazon-kinesis-aggregator', version: '1.0.3'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-kinesis', version: '1.11.363'
+    compile group: 'javax.mail', name: 'mail', version: '1.4.1'
+    compileOnly("com.amazonaws:aws-lambda-java-core:${awsLambdaCoreVersion}")
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
