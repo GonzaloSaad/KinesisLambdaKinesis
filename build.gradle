@@ -119,6 +119,7 @@ configurations {
 dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-function-web:${springCloudFunctionVersion}")
     compile("org.springframework.cloud:spring-cloud-function-adapter-aws:${springCloudFunctionVersion}")
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.5'
     compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '2.2.2'
     compile group: 'com.amazonaws', name: 'amazon-kinesis-deaggregator', version: '1.0.3'
     compile group: 'com.amazonaws', name: 'amazon-kinesis-aggregator', version: '1.0.3'
