@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.12.RELEASE'
-        wrapperVersion = '1.0.11.RELEASE'
-        shadowVersion = '2.0.1'
+        springBootVersion = '2.0.3.RELEASE'
+        wrapperVersion = '1.0.12.RELEASE'
+        shadowVersion = '2.0.3'
     }
     repositories {
         jcenter()
@@ -12,18 +12,19 @@ buildscript {
         maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:${shadowVersion}"
-        classpath("org.springframework.boot.experimental:spring-boot-thin-gradle-plugin:${wrapperVersion}")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.springframework.boot.experimental:spring-boot-thin-gradle-plugin:${wrapperVersion}")
+        classpath("com.github.jengelman.gradle.plugins:shadow:${shadowVersion}")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'org.springframework.boot.experimental.thin-launcher'
+
 
 group = 'com.swa.poc'
 version = '2.0.0.BUILD-SNAPSHOT'
@@ -39,12 +40,17 @@ repositories {
 
 ext {
     springCloudFunctionVersion = "1.0.0.RELEASE"
-    awsLambdaEventsVersion = "2.0.2"
+    springDataDynamoDBVersion = "5.0.2"
+    awsLambdaEventsVersion = "2.2.2"
     awsLambdaCoreVersion = "1.1.0"
+    awsKinesisAggregatorVersion = "1.0.3"
+    awsKinesisJDK = "1.11.368"
+    jacksonVersion = "2.9.6"
 }
+
 ext['reactor.version'] = "3.1.7.RELEASE"
 
-assemble.dependsOn = [shadowJar, bootRepackage]
+assemble.dependsOn = [shadowJar]
 
 jar {
     manifest {
@@ -77,13 +83,18 @@ configurations {
 dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-function-web:${springCloudFunctionVersion}")
     compile("org.springframework.cloud:spring-cloud-function-adapter-aws:${springCloudFunctionVersion}")
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.5'
-    compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: '2.2.2'
-    compile group: 'com.amazonaws', name: 'amazon-kinesis-deaggregator', version: '1.0.3'
-    compile group: 'com.amazonaws', name: 'amazon-kinesis-aggregator', version: '1.0.3'
-    compile group: 'com.amazonaws', name: 'aws-java-sdk-kinesis', version: '1.11.363'
-    compile group: 'javax.mail', name: 'mail', version: '1.4.1'
+    compile group: 'org.springframework.data', name: 'spring-data-commons', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
+    compile group: 'com.github.derjust', name: 'spring-data-dynamodb', version: springDataDynamoDBVersion
+    compile group: 'com.amazonaws', name: 'aws-lambda-java-events', version: awsLambdaEventsVersion
+    compile group: 'com.amazonaws', name: 'amazon-kinesis-deaggregator', version: awsKinesisAggregatorVersion
+    compile group: 'com.amazonaws', name: 'amazon-kinesis-aggregator', version: awsKinesisAggregatorVersion
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-kinesis', version: awsKinesisJDK
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-cbor', version: jacksonVersion
+
     compileOnly("com.amazonaws:aws-lambda-java-core:${awsLambdaCoreVersion}")
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
