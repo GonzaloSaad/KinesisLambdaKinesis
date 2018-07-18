@@ -2,7 +2,6 @@ package example;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.KinesisEvent;
-import example.model.ObjectToConsume;
 import example.modelcrew.FlightVO;
 import org.springframework.cloud.function.adapter.aws.SpringBootKinesisEventHandler;
 
