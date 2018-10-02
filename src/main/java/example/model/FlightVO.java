@@ -1,4 +1,5 @@
-package example.modelcrew;
+package example.model;
+
 import java.time.LocalDateTime;
 
 
