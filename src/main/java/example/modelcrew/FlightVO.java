@@ -1,6 +1,4 @@
 package example.modelcrew;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDateTime;
 
 
@@ -8,7 +6,6 @@ public class FlightVO {
 
     private int flightNumber;
     private String suffix;
-
     private LocalDateTime scheduleDate;
     private String departureStation;
     private String arrivalStation;
@@ -55,5 +52,16 @@ public class FlightVO {
 
     public void setArrivalStation(String arrivalStation) {
         this.arrivalStation = arrivalStation;
+    }
+
+    @Override
+    public String toString() {
+        return "FlightVO{" +
+                "flightNumber=" + flightNumber +
+                ", suffix='" + suffix + '\'' +
+                ", scheduleDate=" + scheduleDate +
+                ", departureStation='" + departureStation + '\'' +
+                ", arrivalStation='" + arrivalStation + '\'' +
+                '}';
     }
 }

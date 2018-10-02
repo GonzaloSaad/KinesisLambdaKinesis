@@ -4,13 +4,13 @@ import com.amazonaws.services.kinesis.AmazonKinesis;
 import com.amazonaws.services.kinesis.AmazonKinesisClientBuilder;
 import com.amazonaws.services.kinesis.model.PutRecordRequest;
 import com.amazonaws.services.kinesis.model.PutRecordResult;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.calebtech.recovery.model.CrewLegalityWarning;
+import com.calebtech.recovery.model.ProblemList;
+import com.calebtech.recovery.model.ProblemListItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import example.model.ObjectToConsume;
-import example.model.ObjectToProduce;
+
 import example.modelcrew.FlightVO;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 @Component("kinesisFunction")
 public class TheFunction implements Consumer<FlightVO>{
 
-    private static final String streamName = "KinesisFromLambdaX242698";
+    private static final String streamName = System.getenv("kinesis");
     private static final String partitionKey = "partition-1";
 
     @Override

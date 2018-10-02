@@ -2,7 +2,6 @@ package example;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.KinesisEvent;
-import example.model.ObjectToConsume;
 import example.modelcrew.FlightVO;
 import org.springframework.cloud.function.adapter.aws.SpringBootKinesisEventHandler;
 
@@ -14,10 +13,8 @@ public class Handler extends SpringBootKinesisEventHandler<FlightVO,Void> {
 
     @Override
     public List<Void> handleRequest(KinesisEvent event, Context context) {
-        System.out.println(System.getenv().get("kinesis"));
         List<Void> results = new ArrayList<>();
-        context.getLogger().log(event.toString());
-
+        context.getLogger().log("In the handler...\n");
         try {
             results = super.handleRequest(event, context);
             context.getLogger().log("Success.\n");
